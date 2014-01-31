@@ -11,6 +11,10 @@
 
 # v0.1 - Initial push
 # v0.11 - Add a little polish.
+# v0.12 - Modifications henceforth are made by Ben L blutgens@gmail.com
+#       - Fix crash caused by not initializing pynotify
+#       - Give ability to spawn more than one ssh process at a time 
+## TODO: Add quit menu item.
 
 import gobject
 import gtk
