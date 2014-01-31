@@ -28,6 +28,11 @@
 # 3. Launch sshplus.py
 # 4. Or better yet, add it to gnome startup programs list so it's run on login.
 
+# v1.1  - Fix crashing on refresh (Ben L)
+#       - Add log file 
+#       - Fix About text and refresh notification output.
+
+
 import gobject
 import gtk
 import appindicator
@@ -35,9 +40,15 @@ import os
 import pynotify
 import sys
 import shlex
+import logging
 
-_VERSION = "1.0"
 
+logging.basicConfig(filename=os.getenv("HOME")+"/.sshplus.log",
+        level=logging.DEBUG,
+        format='%(asctime)s %(message)s')
+
+
+_VERSION = "1.1"
 _SETTINGS_FILE = os.getenv("HOME") + "/.sshplus"
 _SSHMENU_FILE = os.getenv("HOME") + "/.sshmenu"
 
@@ -73,11 +84,13 @@ def menuitem_response(w, item):
     elif item == '_refresh':
         newmenu = build_menu()
         ind.set_menu(newmenu)
-        pynotify.Notification("SSHplus refreshed", "Menu list was refreshed from %s").show()
+        pynotify.init("SSHPlus Notifications")
+        pynotify.Notification("SSHplus refreshed", "Menu list was refreshed from "+_SETTINGS_FILE).show()
     elif item == '_quit':
+        logging.info("SSHPlus is exiting!")
         sys.exit(0)
     else:
-        print item
+        logging.info(item)
         os.spawnvp(os.P_NOWAIT, item['cmd'], [item['cmd']] + item['args'])
         os.wait3(os.WNOHANG)
 
@@ -158,7 +171,7 @@ def get_sshplusconfig():
                         'args': [n.replace("\n", "") for n in shlex.split(args)],
                     })
                 except ValueError:
-                    print "The following line has errors and will be ignored:\n%s" % line
+                    logging.warning("The following line has errors and will be ignored:\n%s" % line)
     finally:
         f.close()
     return app_list
@@ -167,6 +180,7 @@ def build_menu():
     if not os.path.exists(_SETTINGS_FILE) and not os.path.exists(_SSHMENU_FILE) :
         show_help_dlg("<b>ERROR: No .sshmenu or .sshplus file found in home directory</b>\n\n%s" % \
              _ABOUT_TXT, error=True)
+        logging.debug("No .sshmenu or .sshplus file found in home directory!")
         sys.exit(1)
 
     app_list = get_sshplusconfig()
@@ -209,9 +223,9 @@ def build_menu():
 if __name__ == "__main__":
     ind = appindicator.Indicator("sshplus", "gnome-netstatus-tx",
                                  appindicator.CATEGORY_APPLICATION_STATUS)
-    ind.set_label("Launch")
+    ind.set_label("Go")
     ind.set_status(appindicator.STATUS_ACTIVE)
-
+    logging.info("SSHPlus is starting!")
     appmenu = build_menu()
     ind.set_menu(appmenu)
     gtk.main()
