@@ -1,3 +1,8 @@
+All this code was originally written by https://bitbucket.org/anilg/misc
+I really liked sshlist.py and so I grabbed the whole works in case I might
+use the other stuff some day. All credit for this code goes to Anil G, 
+whoever he is =)
+
 Various files in this repo.
 
 1. phoneresizer
