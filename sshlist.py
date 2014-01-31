@@ -14,12 +14,13 @@
 # v0.12 - Modifications henceforth are made by Ben L blutgens@gmail.com
 #       - Fix crash caused by not initializing pynotify
 #       - Give ability to spawn more than one ssh process at a time 
-## TODO: Add quit menu item.
+# v0.13 -  Add Quit menu item.
 
 import gobject
 import gtk
 import appindicator
 import os
+import sys
 import pynotify
 
 ver = "0.11"
@@ -38,7 +39,7 @@ def menuitem_response(w, buf):
         md.set_markup("<b>sshlist v%s</b>" % ver)
         md.format_secondary_markup("""A simple sshmenu like replacement for appindicator menu.
 
-To add items to menu, simple edit the file <i>.sshlist</i> in your home directory (one host per line). The line is directly appended to the ssh command.
+To add items to menu, simply edit the file <i>.sshlist</i> in your home directory (one host per line).
 
 Author: anil.verve@gmail.com
 http://www.gulecha.org""")
@@ -50,6 +51,10 @@ http://www.gulecha.org""")
         # Initialize pynotify, without this it crashes on "Refresh"
         pynotify.init("SSHList Notification")
         pynotify.Notification("sshlist refreshed","Menu list was refreshed from ~/.sshlist").show()
+    elif buf == "_quit":
+        newmenu = build_menu()
+        ind.set_menu(newmenu)
+        gtk.mainquit()
     else:
         print "gnome-terminal -x ssh " + buf + " &"
         run_program("gnome-terminal -x ssh " + buf + " &")
@@ -57,6 +62,7 @@ http://www.gulecha.org""")
 
 def build_menu():
     # create a menu
+
     menu = gtk.Menu()
 
     # read in the ssh hosts list from ~/.sshlist
@@ -89,6 +95,11 @@ def build_menu():
     menu.append(menu_items)
     menu_items.connect("activate", menuitem_response, "_about")
     menu_items.show()
+
+    menu_items = gtk.MenuItem("Quit")
+    menu.append(menu_items)
+    menu_items.connect("activate", menuitem_response, "_quit")
+    menu_items.show()
     return menu
 
 
@@ -99,10 +110,11 @@ if __name__ == "__main__":
     ind.set_label("SSH")
     ind.set_status (appindicator.STATUS_ACTIVE)
     ind.set_attention_icon ("connect_creating")
+    try:
+        with open(os.getenv("HOME")+"/.sshlist","r"):
+            sshmenu = build_menu()
+            ind.set_menu(sshmenu)
+            gtk.main()
+    except IOError:
+        print os.getenv("HOME")+"/.sshlist doesn't exist. Please create it with one hostname per line and run",sys.argv[0],"again"
 
-    # create a menu
-    sshmenu = build_menu()
-    ind.set_menu(sshmenu)
-
-
-    gtk.main()
