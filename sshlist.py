@@ -43,10 +43,12 @@ http://www.gulecha.org""")
     elif buf == "_refresh":
         newmenu = build_menu()
         ind.set_menu(newmenu)
+        # Initialize pynotify, without this it crashes on "Refresh"
+        pynotify.init("SSHList Notification")
         pynotify.Notification("sshlist refreshed","Menu list was refreshed from ~/.sshlist").show()
     else:
-        print "gnome-terminal -x ssh " + buf
-        run_program("gnome-terminal -x ssh " + buf)
+        print "gnome-terminal -x ssh " + buf + " &"
+        run_program("gnome-terminal -x ssh " + buf + " &")
 
 
 def build_menu():
