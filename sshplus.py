@@ -29,8 +29,9 @@
 # 4. Or better yet, add it to gnome startup programs list so it's run on login.
 
 # v1.1  - Fix crashing on refresh (Ben L)
-#       - Add log file 
+#       - Add logging, remove superfluous print messages.
 #       - Fix About text and refresh notification output.
+#       - Added some logging calls
 
 
 import gobject
