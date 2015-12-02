@@ -65,4 +65,8 @@ All done. Select a word and press F7 anytime to view in all it's defined glory.
 A sshmenu like alternative for appindicator menu. Move file into /usr/local/bin, add it to gnome startup list, and add ssh hosts into ~/.sshlist file. One item per line
 
 
+5. sshplus.py
+
+A similar but improved sshlist.py.
+
 
