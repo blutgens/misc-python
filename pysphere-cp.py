@@ -11,13 +11,13 @@ groups = ["prod", "dev", "acc", "unknown"]
 vb03 = 'vdc02vmvc03.vdc.cpr.ca'
 vb04 = 'vdc02vmvc01.vdc.cpr.ca'
 vb05 = 'vdc01vmvc05.vdc.cpr.ca'
-vb06 = 'vdc01vmvc06.vdc.cpr.ca'
+
+#vb06 = 'vdc01vmvc06.vdc.cpr.ca' # DR
 vb07 = 'vdc02vmvc05.vdc.cpr.ca'
 vb08 = 'vdc02vmvc04.vdc.cpr.ca'
 vblocks = {'vb03' : vb03,
         'vb04' : vb04,
         'vb05' : vb05,
-        'vb06' : vb06,
         'vb07' : vb07,
         'vb08' : vb08 }
 
